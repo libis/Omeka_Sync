@@ -1,0 +1,3 @@
+COPY,ca_entities.entity_id,items::Collectie:object_id
+COPY,ca_entities.preferred_labels.name,collection::dc:title
+COPY,ca_entities.idno,items::dc:identifier

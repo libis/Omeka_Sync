@@ -1,9 +1,9 @@
 <?php
 
 require_once(__CA_MODELS_DIR__.'/ca_sets.php');
+
 $t_set = new ca_sets();
-//$publicSets = $t_set->getSets(array('checkAccess' => 1));
-$publicSets = $t_set->getSets();
+$publicSets = $t_set->getSets(array('checkAccess' => 1));
 $count = sizeof($publicSets);
 
 $page = $_GET['page'];
@@ -35,6 +35,7 @@ foreach($publicSets as $item){
         $s .= "<cell>". $set['item_count']."</cell>";
         $s .= "<cell><![CDATA[". $set['set_content_type']."]]></cell>";
         $s .= "<cell><![CDATA[". $set['fname'].' '.$set['lname']."]]></cell>";
+        $s .= "<cell><![CDATA[". "Export publiek"."]]></cell>";
         $s .= "</row>";
 
         $row++;

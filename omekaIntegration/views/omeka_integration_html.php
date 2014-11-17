@@ -1,13 +1,4 @@
 <?php
-/*    require_once(__CA_MODELS_DIR__.'/ca_sets.php');
-    $t_set = new ca_sets(5);
-    $publicSets = $t_set->getSets();
-$test = $t_set->getitems();
-    echo '<pre>';
-    print_r($test);
-    echo '</pre>';*/
-
-
     print _t("<h1>Libis Integration System - LibisIN</h1>\n");
     print _t("<h2>Omeka Integration</h2>\n");
 
@@ -40,13 +31,14 @@ $test = $t_set->getitems();
             jQuery("#list9").jqGrid({
                 url: "Grid_Data",
                 datatype: "xml",
-                colNames:['Set Name','Set ID', 'Number of Records', 'Record Type','User'],
+                colNames:['Set Name','Set ID', 'Number of Records', 'Record Type','User', 'Display Template'],
                 colModel:[
                     {name:'set_name',index:'set_name', search:true, styp:'text'},
                     {name:'set_id',index:'set_id', width:92, search:true, stype:'text'},
                     {name:'number_of_records',index:'number_of_records'},
                     {name:'record_type',index:'record_type'},
-                    {name:'user',index:'user'}
+                    {name:'user',index:'user'},
+                    {name:'display_template',index:'display_template'}
                 ],
                 rowNum:2,
                 rowList:[10,20,30],
@@ -76,9 +68,25 @@ $test = $t_set->getitems();
             $("#integration_results").show();
             var sel_id; sel_id = jQuery("#list9").jqGrid('getGridParam','selarrrow');
             var set_ids = [];
+            var selected_data = [];
             for(var a=0;a < sel_id.length;a++)
             {
-                set_ids.push(jQuery("#list9").jqGrid('getCell', sel_id[a], 'set_id'));
+                selected_data.push(
+                    {'set_id' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'set_id')},
+                    {'set_name' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'set_name')},
+                    {'record_type' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'record_type')},
+                    {'display_template' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'display_template')}
+                );
+
+                set_ids.push(
+                    {
+                        'set_id' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'set_id'),
+                        'set_name' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'set_name'),
+                        'record_type' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'record_type'),
+                        'display_template' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'display_template')
+                    }
+                );
+
             }
             $.post("Push_Data", {selected_sets : set_ids.sort()}, function(data){
                 if (data.length>0){

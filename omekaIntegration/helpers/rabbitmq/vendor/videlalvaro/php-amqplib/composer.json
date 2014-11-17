@@ -16,8 +16,16 @@
     "require-dev": {
         "phpunit/phpunit": "3.7.*"
     },
+    "suggest": {
+        "ext-sockets": "Use AMQPSocketConnection"
+    },
     "autoload": {
         "psr-0": {"PhpAmqpLib": ""}
     },
-    "license": "LGPL-2.1"
+    "license": "LGPL-2.1",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.4-dev"
+        }
+    }
 }

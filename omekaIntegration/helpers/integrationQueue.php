@@ -5,6 +5,7 @@
  */
 
 require_once(__CA_BASE_DIR__."/app/plugins/omekaIntegration/helpers/rabbitmq/vendor/autoload.php");
+
 use PhpAmqpLib\Connection\AMQPConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
@@ -28,7 +29,7 @@ class integrationQueue {
         $connection = new AMQPConnection($this->rmq_server, $this->rmq_port, $this->rmq_uid, $this->rmq_pwd, $this->rmq_vhost);
 
         $channel = $connection->channel();
-        $channel->queue_declare($this->queue_name);
+        $channel->queue_declare($this->queue_name, false, false, false, false);
 
         $msg = new AMQPMessage(json_encode($msg_body));
         $channel->basic_publish($msg, '', $this->queue_name);
