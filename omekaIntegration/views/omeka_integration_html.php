@@ -31,6 +31,7 @@
             jQuery("#list9").jqGrid({
                 url: "Grid_Data",
                 datatype: "xml",
+				height: 250,
                 colNames:['Set Name','Set ID', 'Number of Records', 'Record Type','User', 'Display Template'],
                 colModel:[
                     {name:'set_name',index:'set_name', search:true, styp:'text'},
@@ -40,7 +41,7 @@
                     {name:'user',index:'user'},
                     {name:'display_template',index:'display_template'}
                 ],
-                rowNum:2,
+                rowNum:10,
                 rowList:[10,20,30],
                 pager: '#pager9',
                 recordpos: 'left',
