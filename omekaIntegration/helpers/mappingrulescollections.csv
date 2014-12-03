@@ -1,7 +1,8 @@
 COPY,collection_id,collection::dc:identifier
-COPY,display_label,collection::dc:title
+COPY,ca_collections.preferred_labels,collection::dc:title
 COPY,ca_entities,collection::dc:contributor
 COPY,ca_collections.collectieBeschrijving,collection::dc:abstract
 COPY,ca_collections.beschrijvingsniveau,collection::dc:type
 COPY,ca_collections.external_link,null::dc:identifier
 PUT,"collection",Resource
+PUT,true,items::public

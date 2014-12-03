@@ -13,6 +13,7 @@ COPY,ca_objects.digitoolUrl,items::object:digitoolurl
 COPY,ca_objects.completenessInfo,items::object:Original Format
 COPY,ca_objects.objectSignatuur,items::object:Physical Dimensions
 COPY,ca_collections,collection::dc:title
+COPY,ca_places.georeference,items::geolocation:address
 PUT,true,items::featured
 PUT,true,collection::featured
 PUT,true,items::public

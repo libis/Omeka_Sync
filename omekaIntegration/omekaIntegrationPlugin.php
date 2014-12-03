@@ -84,7 +84,12 @@
 		 * Get plugin user actions
 		 */
 		static public function getRoleActionList() {
-			return array();
+            return array(
+                'can_use_libisin_plugin' => array(
+                    'label' => _t('Can use Libisin plguin'),
+                    'description' => _t('User can use Libisin functionality.')
+                )
+            );
 		}
 		# -------------------------------------------------------
 
