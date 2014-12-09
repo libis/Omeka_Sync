@@ -30,7 +30,7 @@
         $(function () {
             jQuery("#list9").jqGrid({
                 url: "Grid_Data",
-                datatype: "xml",
+                datatype: "json",
 				height: 250,
                 colNames:['Set Name','Set ID', 'Number of Records', 'Record Type','User', 'Display Template'],
                 colModel:[
