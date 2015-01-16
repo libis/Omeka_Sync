@@ -6,52 +6,54 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
     $queuing_server = new integrationQueue();
     $user = $this->request->getUser();
 
+	/* $bundle is sent to the worker. Where it is embedded into the request body of the rest call made to collective access*/
     $bundle = array(
         "bundles" => array(
-            "ca_entities.idno" => "convertCodesToDisplayText:true",
-            "ca_entities.preferred_labels.name" => "delimiter:true",
-            "ca_entities.entity_id" => "delimiter:true",
-            "ca_objects.access" => "convertCodesToDisplayText:true",
+            "ca_objects.idno" => "convertCodesToDisplayText:true",
+            "ca_objects.object_id" => "delimiter:true",
             "ca_objects.preferred_labels.name" => "delimiter:true",
-            "ca_objects.objectBeschrijving" => "returnAsArray:true",
             "ca_objects.objectNaam" => "delimiter:true",
-            "ca_objects.objectDatumInfo" => "returnAsArray:true",
-            "ca_objects.objectMateriaalInfo" => "returnAsArray:true",
             "ca_objects.inhoudBeschrijving" => "returnAsArray:true",
-            "ca_objects.objectTechniekInfo" => "returnAsArray:true",
-            "ca_objects.created" => "returnAsArray:true",
-            "ca_objects.lastModified" => "returnAsArray:true",
-            "ca_objects.vervaardigerRol" => array("returnAsArray" => "true",
-                "template" => "^ca_objects.objectVervaardigingInfo.vervaardigerRol"),
-            "ca_objects.completenessInfo" => array("returnAsArray" => "true"),
-            "ca_objects.toestandInfo" => array("returnAsArray" => "true"),
-            "ca_objects.objectVervaardigingDate" => array("returnAsArray" => "true",
-                "template" => "^ca_objects.objectVervaardigingInfo.objectVervaardigingDate"),
-            "ca_vervaardiger" => array("template" =>
-                "^ca_entities.preferred_labels.displayname",
-                 "restrictToRelationshipTypes" => "vervaardigerRelatie"),
-            "ca_eigenaar" => array("template" =>
-                "^ca_entities.preferred_labels.displayname",
-                "restrictToRelationshipTypes" => "eigenaarRelatie"),
-            "ca_bewaarplaats" => array("template" =>
-                "^ca_entities.preferred_labels.displayname",
-                "restrictToRelationshipTypes" => "bewaarinstellingRelatie"),
-            "ca_collections" => array("template" =>"^ca_collections.preferred_labels"),
             "ca_collections.preferred_labels" => array("template" =>
                 "^ca_collections.preferred_labels"),
-            "ca_objects.dimensions_width" => array("template" =>
-                "<ifdef code='^ca_objects.dimensionsInfo.dimensions_width'>Breedte: ^ca_objects.dimensionsInfo.dimensions_width </ifdef><ifdef code='^ca_objects.dimensionsInfo.dimensions_type'>(^ca_objects.dimensionsInfo.dimensions_type)</ifdef>"),
-            "ca_objects.dimensions_lengte" => array("template" =>
-                "<ifdef code='^ca_objects.dimensionsInfo.dimensions_lengte'>Lengte: ^ca_objects.dimensionsInfo.dimensions_lengte </ifdef><ifdef code='^ca_objects.dimensionsInfo.dimensions_type'>(^ca_objects.dimensionsInfo.dimensions_type)</ifdef>"),
-            "ca_objects.dimensions_height" => array("template" =>
-                "<ifdef code='^ca_objects.dimensionsInfo.dimensions_height'>Hoogte: ^ca_objects.dimensionsInfo.dimensions_height </ifdef><ifdef code='^ca_objects.dimensionsInfo.dimensions_type'>(^ca_objects.dimensionsInfo.dimensions_type)</ifdef>"),
-            "ca_objects.dimensions_depth" => array("template" =>
-                "<ifdef code='^ca_objects.dimensionsInfo.dimensions_depth'>Diepte: ^ca_objects.dimensionsInfo.dimensions_depth </ifdef><ifdef code='^ca_objects.dimensionsInfo.dimensions_type'>(^ca_objects.dimensionsInfo.dimensions_type)</ifdef>"),
-
+            "ca_objects.objectVervaardigingDate" => array("template" => "^ca_objects.objectVervaardigingInfo.objectVervaardigingDate"),
+            "ca_places.preferred_labels" => array("template" =>
+                "^ca_places.name"),
             "ca_objects.digitoolUrl" => array(
                 "returnAsArray" => "true",
-                "convertCodesToDisplayText" => "true"
-            )
+                "convertCodesToDisplayText" => "true"),
+            "ca_objects.creativecommons" => array(
+                "convertCodesToDisplayText" => "true"),
+            "ca_places.georeference" => array("template" =>
+                "^ca_places.georeference",
+                "coordinates" =>   "true",
+                "returnAsArray" => "true"),
+            "ca_vervaardiger" => array("template" =>
+                "^ca_entities.preferred_labels.name",
+                "restrictToRelationshipTypes" => array(292,649,652,655,661,664,667,766,673,676,679,685,691,694,697,784,703,706,712,715,718,721,724,733,736,739,742,748,751,754,757,760,763,769,772,775,778,781,787,790,793,796,799,802,805,808,811,814,817,820,826,829,832,835,838,841,844)),
+            /*	
+				Illustrating problem with 'ca_provenance' example.
+				
+				ca_provenance is a relationship, not a meta-data element. We want to get value for ca_provenance for particular relationship types, specified in array value of 'restrictToRelationshipTypes'. 
+				Specifying these restriction types are not making any difference as values for all relationship types are returned. Except in one case, that is if we replace 'ca_provenance' field with 'ca_entities.preferred_labels.name'.
+				
+				"ca_entities.preferred_labels.name" => array("template" => "^ca_entities.preferred_labels.name", 
+					"restrictToRelationshipTypes" => array(295,304))	
+				
+				Adopting this approach means we will have same name ('ca_entities.preferred_labels.name') for various fields in our bundle, therefore this approach is not applicable.
+				
+				The number values specified in the array value of 'restrictToRelationshipTypes' are identifiers of the relationship types. We have also tried with relationship names but no success.
+			
+			*/
+			"ca_provenance" => array("template" => "^ca_entities.preferred_labels.name", 
+                "restrictToRelationshipTypes" => array(295,304)),
+            "ca_tags" => array("template" =>
+                "^ca_list_items.name",
+                "restrictToRelationshipTypes" => array("trefwoord")),
+            "ca_reference" => array("template" =>
+                "^ca_occurence.name",
+                "restrictToRelationshipTypes" => array("documentatieRelatie"),
+                "restrictToTypes" => array("references") )
         )
     );
 
@@ -102,7 +104,4 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
     echo 'Selected sets ('. implode(',' , $set_names).') are being processed, soon you will receive an email (at '.$user->get('email').') with results.<br>';
 }
 else
-    echo 'No set selected.'
-
-?>
-
+    echo 'No set selected.';
