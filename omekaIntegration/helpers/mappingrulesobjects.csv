@@ -1,17 +1,17 @@
-COPY,object_id,items::object:object_id
-COPY,display_label,collection::dc:title
-COPY,idno,items::dc:identifier
-COPY,ca_objects.inhoudBeschrijving,items::dc:alternative
-COPY,ca_objects.objectNaam,items::dc:title
-COPY,ca_objects.objectDatumInfo,items::dc:date
-COPY,ca_objects.objectMateriaalInfo,items::dc:medium
-COPY,ca_objects.objectTechniekInfo,items::dc:type
-COPY,ca_objects.created,items::dc:created
-COPY,ca_objects.lastModified,items::dc:lastmodified
-COPY,ca_objects.dimensionsInfo,items::dc:extent
+COPY,ca_objects.idno,items::dc:identifier
+COPY,ca_objects.object_id,items::object:object_id
+COPY,ca_objects.preferred_labels.name,collection::dc:title
+COPY,ca_objects.cagObjectnaamInfo.objectNaam,items::object:Objectnaam
+COPY,ca_objects.preferred_labels.name,items::dc:title
+COPY,ca_objects.inhoudBeschrijving,items::dc:description
+COPY,ca_collections.preferred_labels,items::object:Collectie
+COPY,ca_objects.objectVervaardigingDate,items::dc:date
+COPY,ca_places.preferred_labels,items::dc:spatial coverage
 COPY,ca_objects.digitoolUrl,items::object:digitoolurl
-COPY,ca_objects.completenessInfo,items::object:Original Format
-COPY,ca_objects.objectSignatuur,items::object:Physical Dimensions
+COPY,ca_objects.creativecommons,items::dc:License
+COPY,ca_provenance,items::dc:Provenance
+COPY,ca_vervaardiger,items::dc:Creator
+COPY,ca_documentatie,items::dc:References
 COPY,ca_collections,collection::dc:title
 COPY,ca_places.georeference,items::geolocation:address
 PUT,true,items::featured
@@ -19,35 +19,3 @@ PUT,true,collection::featured
 PUT,true,items::public
 PUT,"Object",items::item_type
 PUT,"items",Resource
-APPEND,ca_eigenaar, eigenaar,items::dc:contributor
-PREPEND,ca_bewaarplaats,bewaarplaats,items::dc:spatial coverage
-SPLIT,ca_objects.lastModified,at,items::dc:date;items::dcterms:created
-LIMIT,ca_objects.inhoudBeschrijving,100,items::dc:description
-REPLACE,ca_objects.inhoudBeschrijving,de,replaced,items::object:CollectieTemp
-REPLACE,ca_collections.preferred_labels,collectie,,items::object:Collectie
-COMBINE,(,ca_objects.preferred_labels.name;ca_objects.lastModified,),items::dcterms:extent
-COMBINE,x,ca_objects.preferred_labels.name;ca_objects.lastModified,,items::dcterms:extent1
-COMBINE,,ca_objects.preferred_labels.name;ca_objects.lastModified,,items::dcterms:extent2
-CONDITION,{
-IF[object_id,EQUALS,"18642",DO(COMBINE,(,ca_objects.preferred_labels.name;ca_objects.lastModified,),items::dcterms:extentnm)]
-ELSE[LIMIT,ca_objects.inhoudBeschrijving,100,items::dc:description3]
-}
-CONDITION,{
-IF[ca_objects.preferred_labels.name,NOT EQUAL,"Houten wiel2",DO(COMBINE,x,ca_objects.preferred_labels.name;ca_objects.lastModified,,items::dcterms:extentnm2)]
-}
-CONDITION,{
-IF[display_label,CONTAINS,"wiel",DO(LIMIT,ca_objects.inhoudBeschrijving,10,items::dc:descriptionContain)]
-ELSE[LIMIT,ca_objects.inhoudBeschrijving,100,items::dc:descriptionContainElse]
-}
-CONDITION,{
-IF[display_label,CONTAIN NOT,"Houten",DO(LIMIT,ca_objects.inhoudBeschrijving,10,items::dc:descriptionContainNot)]
-ELSE[LIMIT,ca_objects.inhoudBeschrijving,100,items::dc:descriptionContainNotElse-ev]
-}
-CONDITION,{
-IF[display_label,ICONTAINS,"Wiel",DO(LIMIT,ca_objects.inhoudBeschrijving,10,items::dc:descriptionIContain)]
-ELSE[LIMIT,ca_objects.inhoudBeschrijving,100,items::dc:descriptionIContainElse]
-}
-CONDITION,{
-IF[display_label,ICONTAIN NOT,"Houten",DO(LIMIT,ca_objects.inhoudBeschrijving,10,items::dc:descriptionIContainNot)]
-ELSE[LIMIT,ca_objects.inhoudBeschrijving,100,items::dc:descriptionIContainNotElse-ev]
-}
