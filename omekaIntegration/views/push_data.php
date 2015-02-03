@@ -65,9 +65,9 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
         }
 
         $mapping_rules =  file_get_contents(__CA_BASE_DIR__."/app/plugins/omekaIntegration/helpers/".$mapping_file);
-        $set_names[] = $set['set_name'];
+        $set_names[] = $set['set_code'];
         $set_info[] = array(
-            'set_name'  => $set['set_name'],
+            'set_name'  => $set['set_code'],
             'set_id'    => $set['set_id'],
             'record_type'    => $set['record_type'],
             'bundle'    => json_encode($bundle),

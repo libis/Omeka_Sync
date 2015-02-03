@@ -32,9 +32,9 @@
                 url: "Grid_Data",
                 datatype: "json",
 				height: 250,
-                colNames:['Set Name','Set ID', 'Number of Records', 'Record Type','User', 'Display Template'],
+                colNames:['Set Code','Set ID', 'Number of Records', 'Record Type','User', 'Display Template'],
                 colModel:[
-                    {name:'set_name',index:'set_name', search:true, styp:'text'},
+                    {name:'set_code',index:'set_code', search:true, styp:'text'},
                     {name:'set_id',index:'set_id', width:92, search:true, stype:'text'},
                     {name:'number_of_records',index:'number_of_records'},
                     {name:'record_type',index:'record_type'},
@@ -74,7 +74,7 @@
             {
                 selected_data.push(
                     {'set_id' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'set_id')},
-                    {'set_name' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'set_name')},
+                    {'set_code' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'set_code')},
                     {'record_type' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'record_type')},
                     {'display_template' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'display_template')}
                 );
@@ -82,7 +82,7 @@
                 set_ids.push(
                     {
                         'set_id' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'set_id'),
-                        'set_name' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'set_name'),
+                        'set_code' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'set_code'),
                         'record_type' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'record_type'),
                         'display_template' : jQuery("#list9").jqGrid('getCell', sel_id[a], 'display_template')
                     }
