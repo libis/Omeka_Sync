@@ -6,7 +6,6 @@ COPY,ca_objects.preferred_labels.name,items::dc:title
 COPY,ca_objects.inhoudBeschrijving,items::dc:description
 COPY,ca_collections.preferred_labels,items::object:Collectie
 COPY,ca_objects.objectVervaardigingDate,items::dc:date
-COPY,ca_places.preferred_labels,items::dc:spatial coverage
 COPY,ca_objects.objectVervaardigingInfo.objectVervaardigingPlace,items::dc:spatial coverage
 COPY,ca_objects.digitoolUrl,items::object:digitoolurl
 COPY,ca_objects.creativecommons,items::dc:License
