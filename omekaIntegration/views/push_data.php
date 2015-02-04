@@ -20,7 +20,7 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
                 "^ca_collections.preferred_labels"),
             "ca_objects.objectVervaardigingDate" => array("template" => "^ca_objects.objectVervaardigingInfo.objectVervaardigingDate"),
             "ca_places.preferred_labels" => array("template" =>
-                "^ca_places.name"),
+                "^ca_places.preferred_labels.name"),
             "ca_objects.digitoolUrl" => array(
                 "returnAsArray" => "true",
                 "convertCodesToDisplayText" => "true"),
@@ -36,7 +36,9 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
             "ca_trefwoord" => array("template" =>
                 "^ca_list_items.preferred_labels.name_singular%delimiter=;_%restrictToRelationshipTypes=457"),
             "ca_documentatie" => array("template" =>
-                "^ca_occurrences.preferred_labels.name%delimiter=;_%restrictToRelationshipTypes=388")
+                "^ca_occurrences.preferred_labels.name%delimiter=;_%restrictToRelationshipTypes=388"),
+            "ca_objects.objectVervaardigingInfo.objectVervaardigingPlace" => array("template" =>
+                "^ca_objects.objectVervaardigingInfo.objectVervaardigingPlace.preferred_labels"),
         )
     );
 
