@@ -39,6 +39,15 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
                 "^ca_occurrences.preferred_labels.name%delimiter=;_%restrictToRelationshipTypes=388"),
             "ca_objects.objectVervaardigingInfo.objectVervaardigingPlace" => array("template" =>
                 "^ca_objects.objectVervaardigingInfo.objectVervaardigingPlace.preferred_labels"),
+            "ca_collections.preferred_labels.name" => "delimiter:true",
+            "ca_collections.collectieBeschrijving" => array("template" =>
+                "^ca_collections.collectieBeschrijving"),
+            "ca_entities" => array("template" =>
+                "^ca_entities"),
+            "ca_collections.beschrijvingsniveau" => array("template" =>
+                "^ca_collections.beschrijvingsniveau"),
+            "ca_collections.external_link" => array("template" =>
+                "^ca_collections.external_link")
         )
     );
 
