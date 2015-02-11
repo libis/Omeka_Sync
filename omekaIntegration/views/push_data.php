@@ -1,55 +1,14 @@
 <?php
 
 require_once(__CA_BASE_DIR__."/app/plugins/omekaIntegration/helpers/integrationQueue.php");
+require_once(__CA_LIB_DIR__."/ca/ConfigurationExporter.php");
+
 if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
 {
     $queuing_server = new integrationQueue();
     $user = $this->request->getUser();
 
-	/* $bundle is sent to the worker. Where it is embedded into the request body of the rest call made to collective access*/
-    $bundle = array(
-        "bundles" => array(
-            "ca_objects.idno" => "convertCodesToDisplayText:true",
-            "ca_objects.object_id" => "delimiter:true",
-            "ca_objects.preferred_labels.name" => "delimiter:true",
-            "ca_objects.cagObjectnaamInfo.objectNaam" => array(
-                "delimiter"=> true,
-                "convertCodesToDisplayText" => true ),
-            "ca_objects.inhoudBeschrijving" => "returnAsArray:true",
-            "ca_collections.preferred_labels" => array("template" =>
-                "^ca_collections.preferred_labels"),
-            "ca_objects.objectVervaardigingDate" => array("template" => "^ca_objects.objectVervaardigingInfo.objectVervaardigingDate"),
-            "ca_places.preferred_labels" => array("template" =>
-                "^ca_places.preferred_labels.name"),
-            "ca_objects.digitoolUrl" => array(
-                "returnAsArray" => "true",
-                "convertCodesToDisplayText" => "true"),
-            "ca_objects.creativecommons" => array(
-                "convertCodesToDisplayText" => "true"),
-            "ca_places.georeference" => array("template" =>
-                "^ca_places.georeference",
-                "coordinates" =>   "true",
-                "returnAsArray" => "true"),
-            "ca_vervaardiger" => array("template" =>
-                "^ca_entities.preferred_labels.displayname%delimiter=;_%restrictToRelationshipTypes=292|649|652|655|661|664|667|766|673|676|679|685|691|694|697|784|703|706|712|715|718|721|724|733|736|739|742|748|751|754|757|760|763|769|772|775|778|781|787|790|793|796|799|802|805|808|811|814|817|820|826|829|832|835|838|841|844"),
-            "ca_provenance" => array("template" => "^ca_entities.preferred_labels.displayname%delimiter=;_%restrictToRelationshipTypes=295|304"),
-            "ca_trefwoord" => array("template" =>
-                "^ca_list_items.preferred_labels.name_singular%delimiter=;_%restrictToRelationshipTypes=457"),
-            "ca_documentatie" => array("template" =>
-                "^ca_occurrences.preferred_labels.name%delimiter=;_%restrictToRelationshipTypes=388"),
-            "ca_objects.objectVervaardigingInfo.objectVervaardigingPlace" => array("template" =>
-                "^ca_objects.objectVervaardigingInfo.objectVervaardigingPlace.preferred_labels"),
-            "ca_collections.preferred_labels.name" => "delimiter:true",
-            "ca_collections.collectieBeschrijving" => array("template" =>
-                "^ca_collections.collectieBeschrijving"),
-            "ca_entities" => array("template" =>
-                "^ca_entities"),
-            "ca_collections.beschrijvingsniveau" => array("template" =>
-                "^ca_collections.beschrijvingsniveau"),
-            "ca_collections.external_link" => array("template" =>
-                "^ca_collections.external_link")
-        )
-    );
+    $libisin_display_bundles = getDisplays("exportHVL");
 
     $set_names = array();
     $set_info = array();
@@ -72,7 +31,6 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
                 $mapping_file = "mappingrulesentities.csv";
                 break;
 
-
         }
 
         $mapping_rules =  file_get_contents(__CA_BASE_DIR__."/app/plugins/omekaIntegration/helpers/".$mapping_file);
@@ -81,7 +39,7 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
             'set_name'  => $set['set_code'],
             'set_id'    => $set['set_id'],
             'record_type'    => $set['record_type'],
-            'bundle'    => json_encode($bundle),
+            'bundle'    => json_encode($libisin_display_bundles),
             'mapping'   => $mapping_rules
         );
 
@@ -92,10 +50,201 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
         'user_info' => array('name' => $user->getName(), 'email' => $user->get('email'))
     );
 
-
     $queuing_server->queuingRequest($msg_body);
 
     echo 'Selected sets ('. implode(',' , $set_names).') are being processed, soon you will receive an email (at '.$user->get('email').') with results.<br>';
 }
 else
     echo 'No set selected.';
+
+function getDisplays($display_name){
+    $t_display = new ca_bundle_displays();
+    $va_displays = $t_display->getBundleDisplays();
+
+    $bundles = array();
+    foreach($va_displays as $vn_i => $va_display_by_locale) {
+        $va_locales = array_keys($va_display_by_locale);
+        $va_info = $va_display_by_locale[$va_locales[0]];
+
+        if($va_info['name'] === $display_name){
+            if (!$t_display->load($va_info['display_id'])) { continue; }
+            $va_placements = $t_display->getPlacements();
+
+            foreach($va_placements as $vn_placement_id => $va_placement_info) {
+                $bundle_settings = array();
+                $bundle_settings['bundle_name'] = $va_placement_info['bundle_name'];
+                $va_settings = caUnserializeForDatabase($va_placement_info['settings']);
+                if(is_array($va_settings)) {
+                    foreach($va_settings as $vs_setting => $vm_value) {
+                        switch($vs_setting) {
+                            case 'label':
+                                $labels = array();
+                                if(is_array($vm_value)) {
+                                    foreach($vm_value as $vn_locale_id => $vm_locale_specific_value) {
+                                        if(isset($vm_locale_specific_value) && strlen($vm_locale_specific_value) > 0)
+                                            $labels[] = $vm_locale_specific_value;
+                                    }
+                                    if(sizeof($labels) > 0)
+                                        $bundle_settings['label'] = $labels;
+                                }
+                                break;
+                            default:
+                                $values = array();
+                                if (is_array($vm_value)) {
+                                    foreach($vm_value as $vn_i => $vn_val) {
+                                        if(isset($vn_val) && strlen($vn_val))
+                                            $values [] = $vn_val;
+                                    }
+                                    if(sizeof($values) > 0)
+                                        $bundle_settings[$vs_setting] = $values;
+                                } else {
+                                    if(isset($vm_value) && strlen($vm_value) > 0)
+                                        $bundle_settings[$vs_setting] = $vm_value;
+                                }
+                                break;
+                        }
+                    }
+                    $bundles[] = $bundle_settings;
+                }
+            }
+
+        }
+
+
+    }
+
+    $ignore_template_elements_list = array('remove_first_items', 'hierarchy_order', 'hierarchy_limit', 'show_hierarchy',
+        'hierarchical_delimiter', 'sense', 'delimiter', 'label', 'bundle_name');
+    $asarray_template_elements_list = array('ca_objects.digitoolUrl');
+
+    $libisin_displays = array();
+    foreach($bundles as $bundle_item){
+        $template_values = array();
+
+        $template_key = "";
+        if(array_key_exists('bundle_name', $bundle_item)){
+
+            if(array_key_exists($bundle_item['bundle_name'], $libisin_displays) && array_key_exists('format', $bundle_item))
+            {
+                if(strpos($bundle_item['bundle_name'],'.') !== false){
+                    $alternative_template_key = explode(".", $bundle_item['bundle_name']);
+                    $element_type = $alternative_template_key[0];
+                }
+                else
+                    $element_type = $bundle_item['bundle_name'];
+
+                $template_str = str_replace("^","",$bundle_item['format']);
+
+
+                if(strpos($template_str,$element_type.'.') !== false)
+                    $template_key = $template_str;
+                else
+                    $template_key = $element_type.".".$template_str;
+            }
+            else
+                $template_key = $bundle_item['bundle_name'];
+        }
+        else
+            continue;
+
+
+        $template_values['convertCodesToDisplayText'] = true;
+
+        // return as array settings for specific elements
+        if(in_array($template_key, $asarray_template_elements_list))
+            $template_values['returnAsArray'] = true;
+
+        foreach($bundle_item as $item => $value){
+            if(in_array($item, $ignore_template_elements_list))
+                continue;
+
+            switch($item){
+                case 'format':
+                    if($template_key === 'ca_places' && $value === "^ca_places.georeference"){
+                        if(array_key_exists($template_key, $libisin_displays))
+                            unset($libisin_displays[$template_key]);
+                        $template_key = "ca_places.georeference";
+                        $template_values['coordinates'] = true;
+                        $template_values['returnAsArray'] = true;
+                    }
+                    $template_values['template'] = $value;
+                    break;
+
+                case 'restrict_to_types':
+                case 'restrict_to_relationship_types':
+                    $relation_template = "";
+                    $relation_delimiter = "";
+
+                    if(is_array($value)){
+                        $value = implode('|', $value);
+                    }
+
+                    if(array_key_exists('format', $bundle_item) && strlen($bundle_item['format']) > 0)
+                        $relation_template = $bundle_item['format'];
+                    else
+                        $relation_template = '^'.$bundle_item['bundle_name'].'.preferred_labels.name';
+
+                    if(array_key_exists('delimiter', $bundle_item) && strlen($bundle_item['delimiter']) > 0)
+                        $relation_delimiter = $bundle_item['delimiter'];
+                    else
+                        $relation_delimiter = ";";
+
+                    if($item === 'restrict_to_relationship_types'){
+                        if(isset($template_values['template']) && strpos($template_values['template'],'_%') !== false){
+                            $replace_str_rel_types ="_%restrictToRelationshipTypes=".$value."%";
+                            $template_values['template'] = str_replace("_%", $replace_str_rel_types, $template_values['template']);
+                        }
+                        else
+                            $template_values['template'] = $relation_template."%delimiter=".$relation_delimiter."_%restrictToRelationshipTypes=".$value;
+                    }
+
+                    if($item === 'restrict_to_types'){
+                        if(isset($template_values['template']) && strpos($template_values['template'],'_%') !== false){
+                            $replace_str_types ="_%restrictToTypes=".$value."%";
+                            $template_values['template'] = str_replace("_%", $replace_str_types, $template_values['template']);
+                        }
+                        else
+                            $template_values['template'] = $relation_template."%delimiter=".$relation_delimiter."_%restrictToTypes=".$value;
+                    }
+
+                    unset($template_values['convertCodesToDisplayText']);
+
+                    if(array_key_exists('label', $bundle_item)){
+
+                        if(array_key_exists($template_key, $template_values))
+                            unset($template_values[$template_key]);
+
+                        $display_template_label = $bundle_item['label'];
+                        if(is_array($display_template_label) && sizeof($display_template_label) > 0)
+                            $template_key = $display_template_label[0];
+                        else
+                            $template_key = $bundle_item['label'];
+                    }
+
+                    if(array_key_exists('returnAsArray', $template_values))
+                        unset($template_values['returnAsArray']);
+
+                    break;
+
+                case 'maximum_length':
+                    if($value > 0)
+                        $template_values[$item] = $value;
+                    break;
+
+                case 'delimiter':
+                    $template_values[$item] = $value;
+                    break;
+
+                default:
+                    $template_values[$item] = $value;
+            }
+            if(strlen($template_key) > 0){
+                $libisin_displays[$template_key] = $template_values;
+            }
+        }
+    }
+
+    $libisin_display_bundles ["bundles"] = $libisin_displays;
+    return $libisin_display_bundles;
+}
+
