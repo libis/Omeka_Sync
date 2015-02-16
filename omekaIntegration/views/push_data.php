@@ -1,17 +1,22 @@
 <?php
 
 require_once(__CA_BASE_DIR__."/app/plugins/omekaIntegration/helpers/integrationQueue.php");
-require_once(__CA_LIB_DIR__."/ca/ConfigurationExporter.php");
+require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
+
+
+$conf_file_path = __CA_BASE_DIR__."/app/plugins/omekaIntegration/helpers/config/displaytemplates.conf";
 
 if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
 {
+
+    $o_config = Configuration::load($conf_file_path);
+
     $queuing_server = new integrationQueue();
     $user = $this->request->getUser();
 
-    $libisin_display_bundles = getDisplays("exportHVL");
-
     $set_names = array();
     $set_info = array();
+    $errors = array();
 
     foreach($_POST['selected_sets'] as $set){
 
@@ -33,6 +38,15 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
 
         }
 
+        $display_bundle = $o_config->get($set['record_type']);
+        if(!isset($display_bundle)){
+            $errors[] = "Displaly bundle not found for set '". $set['set_code']."' of type '".$set['record_type']."'";
+            continue;
+
+        }
+
+        $libisin_display_bundles = getDisplays($display_bundle);
+
         $mapping_rules =  file_get_contents(__CA_BASE_DIR__."/app/plugins/omekaIntegration/helpers/".$mapping_file);
         $set_names[] = $set['set_code'];
         $set_info[] = array(
@@ -52,7 +66,9 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
 
     $queuing_server->queuingRequest($msg_body);
 
-    echo 'Selected sets ('. implode(',' , $set_names).') are being processed, soon you will receive an email (at '.$user->get('email').') with results.<br>';
+    echo 'Selected sets ('. implode(',' , $set_names).') are being processed, soon you will receive an email (at '.$user->get('email').') with results.<br>'.
+               'Errors:('.sizeof($errors).')<br>'.
+               implode('<br>' , $errors);
 }
 else
     echo 'No set selected.';
