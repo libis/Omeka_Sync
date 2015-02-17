@@ -174,8 +174,11 @@ function getDisplays($display_name){
             $template_values['returnAsArray'] = true;
 
         if (strpos($template_key,'georeference') !== false) {
-            $template_values['coordinates'] = true;
-        }
+            if($template_key === 'ca_objects.georeference') //for ca_objects.georeference we return coordinates and as array
+                $template_values['coordinates'] = true;
+            else
+                $template_values['returnAsArray'] = false; // for other fields with georeferences we do not return coordinates, and output is not an array
+        }		
 
         foreach($bundle_item as $item => $value){
             if(in_array($item, $ignore_template_elements_list))
