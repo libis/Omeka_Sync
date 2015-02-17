@@ -11,10 +11,11 @@ COPY,ca_entities.ca_entities.adres.adresTelefoon,items::collectie:Telefoon
 COPY,ca_entities.ca_entities.adres.adresEmail,items::collectie:E-mail
 COPY,ca_entities.adres.adresWebsite,items::collectie:Website
 COPY,ca_entities.organisatieType,items::collectie:Type Organisatie
-COPY,ca_entities.erfgoeddragersinfo,items::collectie:Soort erfgoed
-COPY,ca_entities.werkveldInfo,items::collectie:collectiefocus
+SPLIT,ca_entities.erfgoeddragersinfo,;,items::collectie:Soort erfgoed;items::collectie:Soort erfgoed;items::collectie:Soort erfgoed;items::collectie:Soort erfgoed;items::collectie:Soort erfgoed
+SPLIT,ca_entities.werkveldInfo,;,items::collectie:collectiefocus;items::collectie:collectiefocus;items::collectie:collectiefocus;items::collectie:collectiefocus;items::collectie:collectiefocus
 COPY,ca_entities.entity_id,items::collectie:entity id
 COPY,ca_entities.digitoolUrl,items::collectie:digitoolurl
+COPY,ca_entities.georeference,items::geolocation:address
 PUT,true,items::featured
 PUT,true,collection::featured
 PUT,true,items::public

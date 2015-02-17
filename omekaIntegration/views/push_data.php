@@ -3,7 +3,6 @@
 require_once(__CA_BASE_DIR__."/app/plugins/omekaIntegration/helpers/integrationQueue.php");
 require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
 
-
 $conf_file_path = __CA_BASE_DIR__."/app/plugins/omekaIntegration/helpers/config/displaytemplates.conf";
 
 if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
@@ -69,6 +68,7 @@ if(isset($_POST['selected_sets']) && is_array($_POST['selected_sets']))
     echo 'Selected sets ('. implode(',' , $set_names).') are being processed, soon you will receive an email (at '.$user->get('email').') with results.<br>'.
                'Errors:('.sizeof($errors).')<br>'.
                implode('<br>' , $errors);
+
 }
 else
     echo 'No set selected.';
@@ -131,7 +131,10 @@ function getDisplays($display_name){
 
     $ignore_template_elements_list = array('remove_first_items', 'hierarchy_order', 'hierarchy_limit', 'show_hierarchy',
         'hierarchical_delimiter', 'sense', 'delimiter', 'label', 'bundle_name');
-    $asarray_template_elements_list = array('ca_objects.digitoolUrl');
+    $asarray_template_elements_list = array(
+        'ca_objects.digitoolUrl', 'ca_entities.digitoolUrl', 'ca_collections.digitoolUrl', 'ca_occurrences.digitoolUrl',
+        'ca_places.georeference', 'ca_entities.georeference', 'ca_objects.georeference'
+    );
 
     $libisin_displays = array();
     foreach($bundles as $bundle_item){
@@ -169,6 +172,10 @@ function getDisplays($display_name){
         // return as array settings for specific elements
         if(in_array($template_key, $asarray_template_elements_list))
             $template_values['returnAsArray'] = true;
+
+        if (strpos($template_key,'georeference') !== false) {
+            $template_values['coordinates'] = true;
+        }
 
         foreach($bundle_item as $item => $value){
             if(in_array($item, $ignore_template_elements_list))
