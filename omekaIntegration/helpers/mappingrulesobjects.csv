@@ -10,7 +10,7 @@ SPLIT,ca_objects.objectVervaardigingInfo.objectVervaardigingPlace,[,items::dc:Sp
 COPY,ca_objects.objectVervaardigingInfo.objectVervaardigingDate,items::dc:Date
 COPY,ca_objects.digitoolUrl,items::object:digitoolurl
 COPY,ca_objects.creativecommons,items::dc:License
-COPY,dc:references,items::dc:References
+SPLIT,dc:references,;,items::dc:References;items::dc:References;items::dc:References;items::dc:References;items::dc:References;items::dc:References
 COPY,ca_places.georeference,items::geolocation:address
 COPY,ca:tags,items::tags
 PUT,true,items::featured
