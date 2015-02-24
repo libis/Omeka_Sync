@@ -1,19 +1,18 @@
-COPY,ca_objects.idno,items::dc:identifier
-COPY,ca_objects.object_id,items::object:object_id
-COPY,ca_objects.preferred_labels.name,collection::dc:title
-COPY,ca_objects.cagObjectnaamInfo.objectNaam,items::object:Objectnaam
-COPY,ca_objects.preferred_labels.name,items::dc:title
-COPY,ca_objects.inhoudBeschrijving,items::dc:description
-COPY,ca_collections.preferred_labels,items::object:Collectie
-COPY,ca_objects.objectVervaardigingDate,items::dc:date
-COPY,ca_objects.objectVervaardigingInfo.objectVervaardigingPlace,items::dc:spatial coverage
+COPY,ca_objects.idno,items::dc:Identifier
+COPY,ca_objects.object_id,items::object:Object_id
+COPY,ca_objects.cagObjectnaamInfo,items::object:Objectnaam
+COPY,ca_objects.preferred_labels,items::dc:Title
+COPY,ca_objects.inhoudBeschrijving,items::dc:Description
+SPLIT,dc:provenance,;,items::dc:Provenance;items::dc:Provenance;items::dc:Provenance;items::dc:Provenance;items::dc:Provenance;items::dc:Provenance
+COPY,ca_collections,items::object:Collectie
+COPY,dc:maker,items::dc:Creator
+SPLIT,ca_objects.objectVervaardigingInfo.objectVervaardigingPlace,[,items::dc:Spatial coverage
+COPY,ca_objects.objectVervaardigingInfo.objectVervaardigingDate,items::dc:Date
 COPY,ca_objects.digitoolUrl,items::object:digitoolurl
 COPY,ca_objects.creativecommons,items::dc:License
-COPY,ca_provenance,items::dc:Provenance
-COPY,ca_vervaardiger,items::dc:Creator
-COPY,ca_documentatie,items::dc:References
-COPY,ca_collections,collection::dc:title
+COPY,dc:references,items::dc:References
 COPY,ca_places.georeference,items::geolocation:address
+COPY,ca:tags,items::tags
 PUT,true,items::featured
 PUT,true,collection::featured
 PUT,true,items::public
