@@ -1,0 +1,13 @@
+COPY,ca_objects.object_id,items::object:Object_id
+COPY,ca_objects.preferred_labels,items::dc:Title
+COPY,ca_objects.conceptDefinitie,items::algemene-info:scope
+COPY,ca_objects.algemeneBeschrijving,items::algemene-info:algemene beschrijving
+COPY,ca_objects.technischeBeschrijving,items::algemene-info:Technische beschrijving
+SPLIT,ca:references,;,items::algemene-info:Referenties;items::algemene-info:Referenties;items::algemene-info:Referenties;items::algemene-info:Referenties;items::algemene-info:Referenties;items::algemene-info:Referenties
+SPLIT,ca_objects.related,;,items::algemene-info:Ouder;items::algemene-info:Ouder;items::algemene-info:Ouder;items::algemene-info:Ouder;items::algemene-info:Ouder;items::algemene-info:Ouder
+COPY,ca_objects.digitoolUrl,items::algemene-info:digitoolurl
+PUT,true,items::featured
+PUT,true,collection::featured
+PUT,true,items::public
+PUT,"algemene-info",items::item_type
+PUT,"items",Resource
