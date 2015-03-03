@@ -1,4 +1,4 @@
-COPY,ca_objects.object_id,items::object:Object_id
+COPY,ca_objects.object_id,items::algemene-info:Object_id
 COPY,ca_objects.preferred_labels,items::dc:Title
 COPY,ca_objects.conceptDefinitie,items::algemene-info:scope
 COPY,ca_objects.algemeneBeschrijving,items::algemene-info:algemene beschrijving
