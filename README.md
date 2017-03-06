@@ -1,3 +1,3 @@
-libisin
+Omeka_Sync
 =======
-LibisIN - Libis INtegration system is a CollectiveAccess plugin to export data from CollectiveAccess to Omeka.
+Omeka_Sync - a CollectiveAccess plugin to export data from CollectiveAccess to Omeka.
