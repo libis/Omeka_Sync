@@ -79,12 +79,12 @@
  				_p("No corresponding table (or stat universe) declared.");
  			} else {
 				switch($universe) {
-                    //Controle:view for omeka integration controls
+                    //Control for omeka integration controls
 					case 'Omeka Integration':
 						$view_to_rende = 'omeka_integration_html.php';
 						break;				
                     case 'Help':
-						//Controle:view for guide
+						//Control for guide
 						$view_to_rende = 'help_html.php';
 						break;
 
@@ -94,10 +94,39 @@
                         break;
 
                     case 'Push_Data':
-                        //Control for posting selected sets/records
+                        //Control for pushing data to queue
                         $view_to_rende = 'push_data.php';
                         break;
 
+                    case 'Display_Data':
+                        //Control for getting display bundles
+                        $view_to_rende = 'display_data.php';
+                        break;
+
+                    case 'Mapping_Files':
+                        //Control for getting mapping files
+                        $view_to_rende = 'mapping_files.php';
+                        break;
+
+                    case 'Mappings':
+                        //Control for viewing mapping files
+                        $view_to_rende = 'mappings.php';
+                        break;
+
+                    case 'Mapping_Data':
+                        //Control for viewing mapping files
+                        $view_to_rende = 'mapping_data.php';
+                        break;
+
+                    case 'Delete_Mapping':
+                        //Control for viewing mapping files
+                        $view_to_rende = 'delete_mapping.php';
+                        break;
+
+                    case 'Upload_Mapping':
+                        //Control for viewing mapping files
+                        $view_to_rende = 'upload_mapping.php';
+                        break;
                     //Help view is default view
 					default:
 						$view_to_rende = 'help_html.php';

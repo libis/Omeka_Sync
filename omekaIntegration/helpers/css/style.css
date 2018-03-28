@@ -1,0 +1,22 @@
+.bgColor {
+width: 600px;
+height:100px;
+background-color: #edfaff;
+}
+.bgColor label{
+font-weight: bold;
+color: #7e7e7e;
+}
+#uploadFormLayer{
+float: left;
+padding: 1px;
+}
+.btnSubmit {
+background-color: #4d7fa8;
+padding:4px;
+border: #4d7fa8 1px solid;
+color: #FFFFFF;
+}
+.inputFile {
+background-color: #FFFFFF;
+}

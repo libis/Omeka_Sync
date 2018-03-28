@@ -59,18 +59,27 @@
 					'controller' => 'OmekaIntegration',
 					'action' => 'Index/universe/'.$menu_1
 				)
-			);				
-			
-			$menu_2 = _t('Help');
-			$va_menu_items[$menu_2] = array(
-				'displayName' => _t($menu_2),
+			);
+
+            $menu_2 = _t('Mappings');
+            $va_menu_items[$menu_2] = array(
+                'displayName' => _t($menu_2),
+                "default" => array(
+                    'module' => 'omekaIntegration',
+                    'controller' => 'OmekaIntegration',
+                    'action' => 'Index/universe/'.$menu_2
+                )
+            );
+
+            $menu_3 = _t('Help');
+			$va_menu_items[$menu_3] = array(
+				'displayName' => _t($menu_3),
 				"default" => array(
 					'module' => 'omekaIntegration',
 					'controller' => 'OmekaIntegration',
-					'action' => 'Index/universe/'.$menu_2
+					'action' => 'Index/universe/'.$menu_3
 				)
-			);							
-
+			);
 
             $pa_menu_bar['libisin_menu'] = array(
 				'displayName' => _t('LibisIN'),
